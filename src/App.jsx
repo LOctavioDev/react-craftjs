@@ -3,14 +3,16 @@ import { Sky } from '@react-three/drei';
 import { Physics } from '@react-three/cannon';
 import { Ground } from './components/Ground';
 import { FPV } from './components/FPV';
+import { Player } from './components/Player';
 
 function App() {
   return (
     <Canvas>
       <Sky sunPosition={[100, 100, 100]} />
-      <ambientLight intensity={0.9} />
+      <ambientLight />
       <FPV />
       <Physics>
+        <Player />
         <Ground />
       </Physics>
     </Canvas>

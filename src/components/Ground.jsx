@@ -14,15 +14,16 @@ export function Ground () {
 
   const handleClickGround = event => {
     event.stopPropagation()
-    const [x, y, z] = Object.values(event.point)
-      .map(n => Math.ceil(n))
-
-    addCube(x, y, z)
+    if (event.button === 2) { // Click derecho
+      const [x, y, z] = Object.values(event.point).map(n => Math.ceil(n))
+      addCube(x, y, z)
+    }
   }
 
   return (
     <mesh
       onClick={handleClickGround}
+      onContextMenu={(e) => e.preventDefault()}
       ref={ref}
     >
       <planeBufferGeometry attach='geometry' args={[100, 100]} />

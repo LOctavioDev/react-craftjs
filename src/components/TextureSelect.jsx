@@ -1,31 +1,26 @@
-import { useStore } from '../hooks/useStore.js'
-import * as images from '../images/images.js'
-import { useKeyboard } from '../hooks/useKeyboard.js'
-import { useEffect, useState } from 'react'
+import { useStore } from '../hooks/useStore.js';
+import * as images from '../images/images.js';
+import { useKeyboard } from '../hooks/useKeyboard.js';
+import { useEffect, useState } from 'react';
 
 export const TextureSelector = () => {
-  const [visible, setVisible] = useState(true)
-  const [texture, setTexture] = useStore(state => [state.texture, state.setTexture])
+  const [visible, setVisible] = useState(true);
+  const [texture, setTexture] = useStore((state) => [state.texture, state.setTexture]);
 
-  const {
-    dirt,
-    grass,
-    glass,
-    wood,
-    log
-  } = useKeyboard()
+  const { dirt, grass, glass, wood, log, briones } = useKeyboard();
 
+  // Oculta el selector después de 1 segundo
   useEffect(() => {
     const visibilityTimeout = setTimeout(() => {
-      setVisible(false)
-    }, 1000)
+      setVisible(false);
+    }, 10000);
 
-    setVisible(true)
+    setVisible(true);
 
     return () => {
-      clearTimeout(visibilityTimeout)
-    }
-  }, [texture])
+      clearTimeout(visibilityTimeout);
+    };
+  }, [texture]);
 
   useEffect(() => {
     const options = {
@@ -33,35 +28,39 @@ export const TextureSelector = () => {
       grass,
       glass,
       wood,
-      log
-    }
+      log,
+      briones,
+    };
 
-    const selectedTexture = Object
-      .entries(options)
-      .find(([texture, isEnabled]) => isEnabled)
+    const selectedTexture = Object.entries(options).find(
+      ([texture, isEnabled]) => isEnabled
+    );
 
     if (selectedTexture) {
-      const [textureName] = selectedTexture
-      setTexture(textureName)
+      const [textureName] = selectedTexture;
+      setTexture(textureName);
     }
-  }, [dirt, grass, glass, wood, log])
+  }, [dirt, grass, glass, wood, log, briones]);
+
+  // Orden de las texturas ACTIONS_KEYBOARD_MAP
+  const textureOrder = ['briones', 'log', 'dirt', 'grass', 'glass', 'wood'];
 
   return (
-    <div className='texture-selector'>
-      {
-        Object
-          .entries(images)
-          .map(([imgKey, img]) => {
-            return (
-              <img
-                className={texture === imgKey.replace('Img', '') ? 'selected' : ''}
-                key={imgKey}
-                src={img}
-                alt={imgKey}
-              />
-            )
-          })
-      }
+    <div className={`texture-selector ${visible ? '' : 'hidden'}`}>
+      {textureOrder.map((textureName) => {
+        const imgKey = `${textureName}Img`;
+        const img = images[imgKey];
+
+        return (
+          <img
+            className={texture === textureName ? 'selected' : ''}
+            key={textureName}
+            src={img}
+            alt={textureName}
+            onClick={() => setTexture(textureName)}
+          />
+        );
+      })}
     </div>
-  )
-}
+  );
+};
